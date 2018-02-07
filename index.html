@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <style>
+            body{background-color:wheat; color: black;text-align: center;}
+            #a-screen{display: table;background-color: lightgrey; width: 40%; height:40%; margin: auto;}
+            #a-text {display:table-cell; vertical-align: middle; margin:auto;
+             width: 100%; height: 100%; line-height: 100%; 
+             font-size:40px;
+             font-family: sans-serif;
+             }
+        </style>
+    </head>
+    <body>
+        <div id="a-screen">
+            <div id="a-text">Text</div>
+        </div>
+        <textarea id="a-input"></textarea>
+        <button onclick="run()">Read</button>
+
+        <script>
+            var div  = document.getElementById("a-text");
+
+            function sleep(miliseconds) {
+                var currentTime = new Date().getTime();
+
+                while (currentTime + miliseconds < new Date().getTime()) {}
+            }
+
+          
+
+            function run() {
+                console.log("running...");
+                
+                var text = document.getElementById("a-input").value;              
+                var words = text.match(/\b(\w+\W+)/g);
+                var i = 0;
+                console.log(words);
+                (function loop(){
+                    div.innerText = "";
+                    div.innerText = words[i];
+                    if(++i < words.length){
+                        setTimeout(loop, 500);
+                    }
+                })();
+              
+            }
+        </script>
+    </body>
+
+</html>

@@ -26,7 +26,7 @@
              #a-slider:hover {background-color: darkgray;cursor: pointer;}
              #a-label{font-size: 14px; font-style: italic;}
              #a-label::after{content: " words per minute"}
-             #a-input {width: 40%;resize: none;}
+             #a-input {width: 40%;resize: none;}			
              .a-btn-play::after{content: "read";}
              .a-btn-pause {background-color:#cccccc;}
              .a-btn-pause::after{content: "pause";}
@@ -47,39 +47,65 @@
             <div class="a-flex">
                 <div><button onclick="reset()">Reset</button></div>
                 <div>
-                    <input id="a-slider" type="range" min="200" max="700" value="400" step="50" onchange="changeDelay(this)"/>
+                    <input id="a-slider" type="range" min="100" max="700" step="50"/>
                     <br/>
-                    <label id="a-label" for="a-slider">400</label>
-                </div>
+                    <label id="a-label" for="a-slider"></label>
+				</div>
+				<div>
+					<select id="a-select">
+						<option value="1" selected="selected">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+					</select> words
+				</div>
                 <div><button id="a-play"  class="a-btn-play"></button></div>                
             </div>
         </div>
         <textarea id="a-input" rows="8"></textarea>
         <script>
-            var div  = document.getElementById("a-text");
-            document.getElementById("a-input").value = 
+			
+			var variable = function(element){
+				return function () {
+					if(arguments.length > 0) 
+						element.value = arguments[0];					
+				
+					else return element.value;													
+				}
+			}
+
+            var div = document.getElementById("a-text");                       
+			var progress = new variable(document.getElementById("a-progress"));
+			var s = 0;
+			var pause = true;		
+			var i = 0;
+			var n = document.getElementById("a-select").value;
+			const initval = 100;
+			
+			document.getElementById("a-input").value = 
             "Paste some text that you want to speed read, then press \"Read\" button."
             +"\nYou can change the speed using the slider, or pause at any time.";
 
-            function sleep(miliseconds) {
-                var currentTime = new Date().getTime();
-
-                while (currentTime + miliseconds < new Date().getTime()) {}
+			document.getElementById("a-play").addEventListener('click', run);
+			document.getElementById("a-slider").addEventListener('change', changeDelay);   
+			document.getElementById("a-slider").value = initval;
+			document.getElementById("a-label").innerText = initval;
+			document.getElementById("a-select").addEventListener('change', function(){				
+				n = this.value;
+				var wpm = document.getElementById("a-slider").value;
+				s = Math.floor((60 / (wpm / n)) * 1000); 
+			});
+            
+            function changeDelay(event) {
+				document.getElementById('a-label').innerText = event.target.value;
+				// TODO fix this formula.
+                s = Math.floor((60 / (event.target.value / n)) * 1000);                
             }
-
-            var s = 0;
-
-            function changeDelay(el) {
-                document.getElementById('a-label').innerText = el.value;
-                s = Math.floor((60 / el.value) * 1000);
-                
-            }
-            var pause = true;
-           
-            var i= 0;
+            
             function run() {
-                var progress = document.getElementById("a-progress");
-                document.getElementById("a-slider").onchange();
+                
+                document.getElementById("a-slider").dispatchEvent(new Event('change'));
                 this.classList.toggle("a-btn-play");
                 this.classList.toggle("a-btn-pause");
                 var element = this;
@@ -87,21 +113,26 @@
 
                 var text = document.getElementById("a-input").value;              
                 var words = text.match(/\b(\w+\W+)/g);
-              
-                
+                              
                 (function loop(){
-                    div.innerText = "";
-                    div.innerText = words[i];
-                    progress.value = (i / words.length) * 100; 
+					div.innerText = "";
+					var temp = "";
+					for(var j = 0; j < n; ++j)
+					{
+						if(i < words.length)
+							temp += words[i++];
+					}
+					div.innerText = temp;
+                    progress((i  / (words.length)) * 100); 
                     if(pause === false)
-                    {                                          
-                        if(++i < words.length){
+                    {      						                               
+                        if(i < words.length){
                             setTimeout(loop, s, i);
                         }
                         else {
                             i = 0; 
                             element.className = "a-btn-play";
-                            progress.value = 100;
+                            progress(100);
                             pause = true;
                         }
                         
@@ -110,13 +141,12 @@
               
             }
 
-            function reset() {
-                // TODO use two-way binding...
+            function reset() {                
                 i = 0;
-                document.getElementById("a-progress").value = 0;
+                progress(0);
             }
 
-            document.getElementById("a-play").addEventListener('click', run);
+
         </script>
     </body>
 

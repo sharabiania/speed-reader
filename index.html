@@ -45,18 +45,18 @@
 				#a-input {width:100%; height: 40%;}				
 				.a-flex {flex-direction: column-reverse;justify-content: center;} 
 				.a-flex > div {width: 100%; margin:5px 0px;}		
-				.a-flex > div:nth-child(2) {display: flex; flex-direction: row;justify-content: space-around;}		
+				.a-flex > div:nth-child(2) {display: flex; flex-direction: row;justify-content: space-around;flex-wrap: wrap;}		
 			 }
 
-			 @media only screen and (min-width: 701px) and (max-width: 1024px){		
-				.a-flex > div:last-child {text-align: right; display: inline-flex;}	
+			 @media only screen and (min-width: 701px) and (max-width: 1200px){		
+				.a-flex > div:last-child {text-align: right; display: flex; justify-content: flex-end;}	
 				.a-flex > div:first-child {text-align: left;}
 				.a-container {width: 70%;}				
 				#a-input {width:70%;}				 
 			 }
 
-			 @media only screen and (min-width:1024px) {
-				.a-flex > div:last-child {text-align: right; display: inline-flex;}
+			 @media only screen and (min-width:1200px) {
+				.a-flex > div:last-child {text-align: right; display: flex; justify-content: flex-end;}
             	.a-flex > div:first-child {text-align: left;}
 			 }
         </style>

@@ -33,22 +33,31 @@
             .a-btn-pause::after{content: "pause";}
             
             .a-flex {display: flex;padding: 5px;}
-            .a-flex > div {flex-grow: 0; flex-basis: 33%;}
-            .a-flex > div:last-child {text-align: right;}
-            .a-flex > div:first-child {text-align: left;}
+            .a-flex > div {flex-grow: 0; flex-basis: 33%;align-self: baseline;}            
+
+			
 
 			.a-container {width: 40%; height:60%;min-height: max-content;background-color: lightgray;margin: auto;}
 		 			 
 			 @media only screen and (max-width: 700px) {
 				html, body {padding: 0; margin:0;}
 				.a-container {width: 100%;}				
-				#a-input {width:100%; height: 40%;}				 
+				#a-input {width:100%; height: 40%;}				
+				.a-flex {flex-direction: column-reverse;justify-content: center;} 
+				.a-flex > div {width: 100%; margin:5px 0px;}		
+				.a-flex > div:nth-child(2) {display: flex; flex-direction: row;justify-content: space-around;}		
 			 }
 
-			 @media only screen and (min-width: 701px) and (max-width: 1024px){
-				
-				.a-container {width: 60%;}				
-				#a-input {width:60%;}				 
+			 @media only screen and (min-width: 701px) and (max-width: 1024px){		
+				.a-flex > div:last-child {text-align: right; display: inline-flex;}	
+				.a-flex > div:first-child {text-align: left;}
+				.a-container {width: 70%;}				
+				#a-input {width:70%;}				 
+			 }
+
+			 @media only screen and (min-width:1024px) {
+				.a-flex > div:last-child {text-align: right; display: inline-flex;}
+            	.a-flex > div:first-child {text-align: left;}
 			 }
         </style>
     </head>
@@ -60,22 +69,29 @@
             <progress id="a-progress" value="0" max="100"></progress>
             <br/><hr>
             <div class="a-flex">
-                <div><button onclick="reset()">Reset</button></div>
-                <div>
-                    <input id="a-slider" type="range" min="100" max="700" step="50"/>
-                    <br/>
-                    <label id="a-label" for="a-slider"></label>
-				</div>
+				<div><button onclick="reset()">Reset</button></div>
 				<div>
-					<select id="a-select">
-						<option value="1" selected="selected">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-					</select> words
+					<div>
+						<input id="a-slider" type="range" min="100" max="700" step="50"/>
+						<br/>
+						<label id="a-label" for="a-slider"></label>
+					</div>
+					<div>
+						<select id="a-select">
+							<option value="1" selected="selected">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+						</select> words
+					</div>
+				</div>				
+				<div class="a-control-panel">
+					<button>Prev</button>
+					<button id="a-play"  class="a-btn-play"></button>
+					<button>next</button>
 				</div>
-                <div><button id="a-play"  class="a-btn-play"></button></div>                
+				
             </div>
         </div>
         <textarea id="a-input" rows="8"></textarea>

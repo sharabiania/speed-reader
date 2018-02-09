@@ -2,6 +2,7 @@
 
 <html>
     <head>
+		<meta name="viewport" content="width=device-width" />
         <style>
             /*** a-Theme ***/
             *{box-sizing: border-box;}
@@ -22,19 +23,29 @@
              font-size:40px;
              font-family: sans-serif;
              }
-             #a-progress {width: 100%;}             
-             #a-slider:hover {background-color: darkgray;cursor: pointer;}
-             #a-label{font-size: 14px; font-style: italic;}
-             #a-label::after{content: " words per minute"}
-             #a-input {width: 40%;resize: none;}			
-             .a-btn-play::after{content: "read";}
-             .a-btn-pause {background-color:#cccccc;}
-             .a-btn-pause::after{content: "pause";}
-             .a-container {width: 40%; height:60%;min-height: max-content;background-color: lightgray;margin: auto;}
-             .a-flex {display: flex;padding: 5px;}
-             .a-flex > div {flex-grow: 0; flex-basis: 33%;}
-             .a-flex > div:last-child {text-align: right;}
-             .a-flex > div:first-child {text-align: left;}
+            #a-progress {width: 100%;}             
+            #a-slider:hover {background-color: darkgray;cursor: pointer;}
+            #a-label{font-size: 14px; font-style: italic;}
+            #a-label::after{content: " words per minute"}
+            #a-input {width: 40%;resize: none;}			
+            .a-btn-play::after{content: "read";}
+            .a-btn-pause {background-color:#cccccc;}
+            .a-btn-pause::after{content: "pause";}
+            
+            .a-flex {display: flex;padding: 5px;}
+            .a-flex > div {flex-grow: 0; flex-basis: 33%;}
+            .a-flex > div:last-child {text-align: right;}
+            .a-flex > div:first-child {text-align: left;}
+
+			.a-container {width: 40%; height:60%;min-height: max-content;background-color: lightgray;margin: auto;}
+		 			 
+			 @media only screen and (max-width: 400px) {
+				html, body {padding: 0; margin:0;}
+				.a-container {width: 100%;}
+				#a-input {width:100%; height: 40%;}
+				 
+
+			 }
         </style>
     </head>
     <body>

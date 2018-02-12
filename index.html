@@ -33,18 +33,29 @@
             .a-btn-pause::after{content: "pause";}
             
             .a-flex {display: flex;padding: 5px;}
-            .a-flex > div {flex-grow: 0; flex-basis: 33%;}
-            .a-flex > div:last-child {text-align: right;}
-            .a-flex > div:first-child {text-align: left;}
-
+            .a-flex > div {flex-grow: 0; flex-basis: 33%;align-self: baseline;}            
+			
 			.a-container {width: 40%; height:60%;min-height: max-content;background-color: lightgray;margin: auto;}
 		 			 
-			 @media only screen and (max-width: 400px) {
+			 @media only screen and (max-width: 700px) {
 				html, body {padding: 0; margin:0;}
-				.a-container {width: 100%;}
-				#a-input {width:100%; height: 40%;}
-				 
+				.a-container {width: 100%;}				
+				#a-input {width:100%; height: 40%;}				
+				.a-flex {flex-direction: column-reverse;justify-content: center;} 
+				.a-flex > div {width: 100%; margin:5px 0px;}		
+				.a-flex > div:nth-child(2) {display: flex; flex-direction: row;justify-content: space-around;flex-wrap: wrap;}		
+			 }
 
+			 @media only screen and (min-width: 701px) and (max-width: 1200px){		
+				.a-flex > div:last-child {text-align: right; display: flex; justify-content: flex-end;}	
+				.a-flex > div:first-child {text-align: left;}
+				.a-container {width: 70%;}				
+				#a-input {width:70%;}				 
+			 }
+
+			 @media only screen and (min-width:1200px) {
+				.a-flex > div:last-child {text-align: right; display: flex; justify-content: flex-end;}
+            	.a-flex > div:first-child {text-align: left;}
 			 }
         </style>
     </head>
@@ -56,22 +67,29 @@
             <progress id="a-progress" value="0" max="100"></progress>
             <br/><hr>
             <div class="a-flex">
-                <div><button onclick="reset()">Reset</button></div>
-                <div>
-                    <input id="a-slider" type="range" min="100" max="700" step="50"/>
-                    <br/>
-                    <label id="a-label" for="a-slider"></label>
-				</div>
+				<div><button onclick="reset()">Reset</button></div>
 				<div>
-					<select id="a-select">
-						<option value="1" selected="selected">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-					</select> words
+					<div>
+						<input id="a-slider" type="range" min="100" max="700" step="50"/>
+						<br/>
+						<label id="a-label" for="a-slider"></label>
+					</div>
+					<div>
+						<select id="a-select">
+							<option value="1" selected="selected">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+						</select> words
+					</div>
+				</div>				
+				<div class="a-control-panel">
+					<button id="a-prev">Prev</button>
+					<button id="a-play" class="a-btn-play"></button>
+					<button id="a-next">next</button>
 				</div>
-                <div><button id="a-play"  class="a-btn-play"></button></div>                
+				
             </div>
         </div>
         <textarea id="a-input" rows="8"></textarea>
@@ -89,45 +107,102 @@
             var div = document.getElementById("a-text");                       
 			var progress = new variable(document.getElementById("a-progress"));
 			var s = 0;
-			var pause = true;		
+			var pause = true;			
 			var i = 0;
+			var words = [];
+			var id; // id of the last running interval/timer
 			var n = document.getElementById("a-select").value;
 			const initval = 100;
 			
 			document.getElementById("a-input").value = 
             "Paste some text that you want to speed read, then press \"Read\" button."
             +"\nYou can change the speed using the slider, or pause at any time.";
-
-			document.getElementById("a-play").addEventListener('click', run);
-			document.getElementById("a-slider").addEventListener('change', changeDelay);   
 			document.getElementById("a-slider").value = initval;
 			document.getElementById("a-label").innerText = initval;
+
+
+			document.getElementById("a-play").addEventListener('click', run);			
+			document.getElementById("a-slider").addEventListener('change', function(){
+				document.getElementById('a-label').innerText = this.value;
+				// TODO fix this formula.
+                s = Math.floor((60 / (this.value / n)) * 1000);                
+			});   			
 			document.getElementById("a-select").addEventListener('change', function(){				
 				n = this.value;
 				var wpm = document.getElementById("a-slider").value;
 				s = Math.floor((60 / (wpm / n)) * 1000); 
 			});
-            
-            function changeDelay(event) {
-				document.getElementById('a-label').innerText = event.target.value;
-				// TODO fix this formula.
-                s = Math.floor((60 / (event.target.value / n)) * 1000);                
-            }
-            
+			document.getElementById("a-prev").addEventListener('click', function(){			
+				
+				if(i > 2*n) {
+					i -= (2*n);
+					var temp = "";
+					for(var j = 0; j < n; ++j)
+					{
+						if(i < words.length)
+							temp += words[i++];
+					}
+					div.innerText = temp;
+					progress((i  / (words.length)) * 100);
+				}		
+				else {
+					i = 0;				
+					var temp = "";
+					for(var j = 0; j < n; ++j)
+					{
+						if(i < words.length)
+							temp += words[i++];
+					}
+					div.innerText = temp;
+					progress(0);
+				}										
+			});
+			document.getElementById("a-next").addEventListener('click', function(){				
+				
+				
+					var temp = "";
+					for(var j = 0; j < n; ++j)
+					{
+						if(i < words.length)
+							temp += words[i++];
+					}
+					div.innerText = temp;
+					progress((i  / (words.length)) * 100);
+					if(i >= words.length) {
+						i = words.length - 1; 				
+						var temp = "";
+						for(var j = 0; j < n; ++j)
+						{
+							if(i < words.length)
+								temp += words[i++];
+						}
+						div.innerText = temp;
+					progress(100);
+				}										
+			});
+                      
+
             function run() {
-                
                 document.getElementById("a-slider").dispatchEvent(new Event('change'));
-                this.classList.toggle("a-btn-play");
-                this.classList.toggle("a-btn-pause");
+                document.getElementById("a-play").classList.toggle("a-btn-play");
+                document.getElementById("a-play").classList.toggle("a-btn-pause");
                 var element = this;
                 pause = !pause;
+				if(pause === true) {	
+					console.log("cancelling: " + id);
+					if(id !== undefined)			
+						clearTimeout(id);					
+					return;
+				}
 
                 var text = document.getElementById("a-input").value;              
-                var words = text.match(/\b(\w+\W+)/g);
+                words = text.match(/\b(\w+\W+)/g);
                               
                 (function loop(){
+				
 					div.innerText = "";
 					var temp = "";
+				
 					for(var j = 0; j < n; ++j)
 					{
 						if(i < words.length)
@@ -138,16 +213,19 @@
                     if(pause === false)
                     {      						                               
                         if(i < words.length){
-                            setTimeout(loop, s, i);
+                            id = setTimeout(loop, s, i);
                         }
                         else {
-                            i = 0; 
+                            i = words.length - 1; 
                             element.className = "a-btn-play";
                             progress(100);
                             pause = true;
-                        }
-                        
-                    }
+                        }                        
+					}
+					else{
+						// TODO probably unnecessary
+						clearTimeout(id);
+					}
                 })();
               
             }

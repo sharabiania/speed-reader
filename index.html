@@ -27,7 +27,7 @@
             #a-slider:hover {background-color: darkgray;cursor: pointer;}
             #a-label{font-size: 14px; font-style: italic;}
             #a-label::after{content: " words per minute"}
-            #a-input {width: 40%;resize: none;}			
+            #a-input {width: 45%;resize: none;}			
             .a-btn-play::after{content: "read";}
             .a-btn-pause {background-color:#cccccc;}
             .a-btn-pause::after{content: "pause";}
@@ -35,7 +35,7 @@
             .a-flex {display: flex;padding: 5px;}
             .a-flex > div {flex-grow: 0; flex-basis: 33%;align-self: baseline;}            
 			
-			.a-container {width: 40%; height:60%;min-height: max-content;background-color: lightgray;margin: auto;}
+			.a-container {width: 45%; height:60%;min-height: max-content;background-color: lightgray;margin: auto;}
 		 			 
 			 @media only screen and (max-width: 700px) {
 				html, body {padding: 0; margin:0;}
@@ -161,8 +161,7 @@
 				loop();
 			});
 			document.getElementById("a-next").addEventListener('click', function(){				
-				
-				
+                    clearTimeout(id);
 					var temp = "";
 					for(var j = 0; j < n; ++j)
 					{
@@ -181,7 +180,9 @@
 						}
 						div.innerText = temp;
 					progress(100);
-				}										
+				    }	
+                    --i;
+                    loop();									
 			});
                       
 
@@ -204,7 +205,7 @@
 					}
 					else {
 						i = words.length - 1; 
-						element.className = "a-btn-play";
+						document.getElementById("a-play").className = "a-btn-play";
 						progress(100);
 						pause = true;
 					}                        
@@ -220,7 +221,7 @@
                 document.getElementById("a-slider").dispatchEvent(new Event('change'));
                 document.getElementById("a-play").classList.toggle("a-btn-play");
                 document.getElementById("a-play").classList.toggle("a-btn-pause");
-                var element = this;
+                
                 pause = !pause;
 				if(pause === true) {	
 					console.log("cancelling: " + id);

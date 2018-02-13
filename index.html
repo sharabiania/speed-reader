@@ -145,6 +145,7 @@
 					}
 					div.innerText = temp;
 					progress((i  / (words.length)) * 100);
+                    
 				}		
 				else {
 					i = 0;				
@@ -157,7 +158,7 @@
 					div.innerText = temp;
 					progress(0);
 				}	
-				--i;	
+				i -= n;
 				loop();
 			});
 			document.getElementById("a-next").addEventListener('click', function(){				
@@ -170,6 +171,8 @@
 					}
 					div.innerText = temp;
 					progress((i  / (words.length)) * 100);
+                    i -= n;
+
 					if(i >= words.length) {
 						i = words.length - 1; 				
 						var temp = "";
@@ -179,9 +182,8 @@
 								temp += words[i++];
 						}
 						div.innerText = temp;
-					progress(100);
+					    progress(100);
 				    }	
-                    --i;
                     loop();									
 			});
                       

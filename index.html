@@ -94,7 +94,7 @@
         </div>
         <textarea id="a-input" rows="8"></textarea>
         <script>
-			
+			"use strict";
 			var variable = function(element){
 				return function () {
 					if(arguments.length > 0) 
@@ -112,11 +112,12 @@
 			var words = [];
 			var id; // id of the last running interval/timer
 			var n = document.getElementById("a-select").value;
+			var test;
 			const initval = 100;
 			
 			document.getElementById("a-input").value = 
-            "Paste some text that you want to speed read, then press \"Read\" button."
-            +"\nYou can change the speed using the slider, or pause at any time.";
+            "Paste some text that you want to speed read, then press \"Read\" button.\
+            \nYou can change the speed using the slider, or pause at any time.";
 			document.getElementById("a-slider").value = initval;
 			document.getElementById("a-label").innerText = initval;
 
@@ -133,7 +134,7 @@
 				s = Math.floor((60 / (wpm / n)) * 1000); 
 			});
 			document.getElementById("a-prev").addEventListener('click', function(){			
-				
+				clearTimeout(id);
 				if(i > 2*n) {
 					i -= (2*n);
 					var temp = "";
@@ -155,7 +156,9 @@
 					}
 					div.innerText = temp;
 					progress(0);
-				}										
+				}	
+				--i;	
+				loop();
 			});
 			document.getElementById("a-next").addEventListener('click', function(){				
 				
@@ -182,6 +185,37 @@
 			});
                       
 
+			function loop(){
+				
+				div.innerText = "";
+				var temp = "";
+			
+				for(var j = 0; j < n; ++j)
+				{
+					if(i < words.length)
+						temp += words[i++];
+				}
+				div.innerText = temp;
+				progress((i  / (words.length)) * 100); 
+				if(pause === false)
+				{      						                               
+					if(i < words.length){
+						id = setTimeout(loop, s, i);
+					}
+					else {
+						i = words.length - 1; 
+						element.className = "a-btn-play";
+						progress(100);
+						pause = true;
+					}                        
+				}
+				else{
+					// TODO probably unnecessary
+					clearTimeout(id);
+				}
+			}
+
+
             function run() {
                 document.getElementById("a-slider").dispatchEvent(new Event('change'));
                 document.getElementById("a-play").classList.toggle("a-btn-play");
@@ -197,36 +231,8 @@
 
                 var text = document.getElementById("a-input").value;              
                 words = text.match(/\b(\w+\W+)/g);
-                              
-                (function loop(){
 				
-					div.innerText = "";
-					var temp = "";
-				
-					for(var j = 0; j < n; ++j)
-					{
-						if(i < words.length)
-							temp += words[i++];
-					}
-					div.innerText = temp;
-                    progress((i  / (words.length)) * 100); 
-                    if(pause === false)
-                    {      						                               
-                        if(i < words.length){
-                            id = setTimeout(loop, s, i);
-                        }
-                        else {
-                            i = words.length - 1; 
-                            element.className = "a-btn-play";
-                            progress(100);
-                            pause = true;
-                        }                        
-					}
-					else{
-						// TODO probably unnecessary
-						clearTimeout(id);
-					}
-                })();
+				loop();
               
             }
 

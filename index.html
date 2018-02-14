@@ -133,7 +133,8 @@
 				var wpm = document.getElementById("a-slider").value;
 				s = Math.floor((60 / (wpm / n)) * 1000); 
 			});
-			document.getElementById("a-prev").addEventListener('click', function(){			
+			document.getElementById("a-prev").addEventListener('click', function(){	
+                if(words.length === 0) return;		
 				clearTimeout(id);
                 var temp = "";
                    
@@ -145,14 +146,13 @@
                         temp += words[++i];
                 }
                 
-					
-			
 				div.innerText = temp;
 				progress((i  / (words.length - 1)) * 100);
                 if(pause === false) i-=n;
 				loop();
 			});
 			document.getElementById("a-next").addEventListener('click', function(){				
+                    if(words.length === 0) return;
                     clearTimeout(id);
 					var temp = "";
                     if(i >= words.length - 1) {
@@ -165,7 +165,6 @@
                             temp += words[++i];
                     }
 					
-                 
                     div.innerText = temp;
 					progress((i  / (words.length - 1)) * 100);
                     if(pause === false) i-=n;
@@ -185,8 +184,7 @@
 					if(i < words.length - 1)
 						temp += words[++i];
 				}
-			                     
-				                            
+			                                    
                 if(i >= words.length - 1){
                     i = words.length; 
                     document.getElementById("a-play").className = "a-btn-play";
@@ -207,7 +205,6 @@
                 
                 pause = !pause;
 				if(pause === true) {	
-					console.log("cancelling: " + id);
 					if(id !== undefined)			
 						clearTimeout(id);					
 					return;

@@ -108,7 +108,7 @@
 			var progress = new variable(document.getElementById("a-progress"));
 			var s = 0;
 			var pause = true;			
-			var i = 0;
+			var i = -1;
 			var words = [];
 			var id; // id of the last running interval/timer
 			var n = document.getElementById("a-select").value;
@@ -135,87 +135,68 @@
 			});
 			document.getElementById("a-prev").addEventListener('click', function(){			
 				clearTimeout(id);
-				if(i > 2*n) {
-					i -= (2*n);
-					var temp = "";
-					for(var j = 0; j < n; ++j)
-					{
-						if(i < words.length)
-							temp += words[i++];
-					}
-					div.innerText = temp;
-					progress((i  / (words.length)) * 100);
-                    
-				}		
-				else {
-					i = 0;				
-					var temp = "";
-					for(var j = 0; j < n; ++j)
-					{
-						if(i < words.length)
-							temp += words[i++];
-					}
-					div.innerText = temp;
-					progress(0);
-				}	
-				i -= n;
+                var temp = "";
+                   
+                i -= 2*n;
+                if(i < 2*n) { i = -1;}
+                for(var j = 0; j < n; ++j)
+                {
+                    if(i < words.length - 1)
+                        temp += words[++i];
+                }
+                
+					
+			
+				div.innerText = temp;
+				progress((i  / (words.length - 1)) * 100);
+                if(pause === false) i-=n;
 				loop();
 			});
 			document.getElementById("a-next").addEventListener('click', function(){				
                     clearTimeout(id);
 					var temp = "";
-					for(var j = 0; j < n; ++j)
-					{
-						if(i < words.length)
-							temp += words[i++];
-					}
-					div.innerText = temp;
-					progress((i  / (words.length)) * 100);
-                    i -= n;
-
-					if(i >= words.length) {
-						i = words.length - 1; 				
-						var temp = "";
-						for(var j = 0; j < n; ++j)
-						{
-							if(i < words.length)
-								temp += words[i++];
-						}
-						div.innerText = temp;
-					    progress(100);
-				    }	
+                    if(i >= words.length - 1) {
+                        i = words.length;	
+                        return;
+                    }
+                    for(var j = 0; j < n; ++j)
+                    {
+                        if(i < words.length - 1)
+                            temp += words[++i];
+                    }
+					
+                 
+                    div.innerText = temp;
+					progress((i  / (words.length - 1)) * 100);
+                    if(pause === false) i-=n;
                     loop();									
 			});
                       
 
 			function loop(){
-				
-				div.innerText = "";
+				if(pause === true) {
+                    clearInterval(id);
+                    return;
+                }
 				var temp = "";
 			
 				for(var j = 0; j < n; ++j)
 				{
 					if(i < words.length)
-						temp += words[i++];
+						temp += words[++i];
 				}
-				div.innerText = temp;
-				progress((i  / (words.length)) * 100); 
-				if(pause === false)
-				{      						                               
-					if(i < words.length){
-						id = setTimeout(loop, s, i);
-					}
-					else {
-						i = words.length - 1; 
-						document.getElementById("a-play").className = "a-btn-play";
-						progress(100);
-						pause = true;
-					}                        
-				}
-				else{
-					// TODO probably unnecessary
-					clearTimeout(id);
-				}
+			                     
+				                            
+                if(i >= words.length - 1){
+                    i = words.length - 1; 
+                    document.getElementById("a-play").className = "a-btn-play";
+                    pause = true;
+                }
+                else {
+                    id = setTimeout(loop, s, i);                    
+                } 
+                div.innerText = temp;
+                progress((i  / (words.length - 1)) * 100);  
 			}
 
 
@@ -240,7 +221,7 @@
             }
 
             function reset() {                
-                i = 0;
+                i = -1;
                 progress(0);
             }
 
